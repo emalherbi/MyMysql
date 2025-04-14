@@ -226,7 +226,7 @@ class MyMysql
         $sql = '';
         $sql .= " INSERT INTO $table (";
         foreach ($item as $key => $value) {
-            $sql .= "$key,";
+            $sql .= "`$key`,";
         }
         $sql = rtrim($sql, ',');
         $sql .= ') VALUES (';
@@ -271,13 +271,13 @@ class MyMysql
         $sql = '';
         $sql .= " UPDATE $table SET ";
         foreach ($item as $key => $value) {
-            $sql .= "$key=:$key,";
+            $sql .= "`$key`=:$key,";
         }
         $sql = rtrim($sql, ',');
         $sql .= ' WHERE 1 = 1 ';
         foreach ($where as $key => $value) {
             $key = str_replace(':', '', $key);
-            $sql .= " AND $key = :$key ";
+            $sql .= " AND `$key`=:$key ";
         }
         $log = $sql;
 
