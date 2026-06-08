@@ -19,6 +19,7 @@ class MyMysql
     private $ini = null;
     private $dirlog = null;
     private $db = null;
+    private $lastError = '';    
 
     public function __construct($ini = '', $dirlog = '')
     {
@@ -251,6 +252,7 @@ class MyMysql
         if (!$exec) {
             $errorInfo = $stmt->errorInfo();
             $err = $errorInfo[1].' - '.$errorInfo[2];
+            $this->lastError = $err;
 
             $this->logger($log, $err);
 
@@ -301,6 +303,7 @@ class MyMysql
         if (!$exec) {
             $errorInfo = $stmt->errorInfo();
             $err = $errorInfo[1].' - '.$errorInfo[2];
+            $this->lastError = $err;
 
             $this->logger($log, $err);
 
@@ -402,7 +405,9 @@ class MyMysql
 
         if (is_bool($result->model) && (false == $result->model)) {
             $result->status = false;
-            $result->msg = "Ops. Ocorreu um erro. Method: $method. Sql: $sql. Table: $table. Where: ".json_encode($where).". Order By: $orderBy. Obj: ".json_encode($obj).". Id: $id ";
+            $dbErr = !empty($this->lastError) ? ' DB: '.$this->lastError : '';
+            $result->msg = "Ops. Ocorreu um erro. Method: $method. Sql: $sql. Table: $table. Where: ".json_encode($where).". Order By: $orderBy. Obj: ".json_encode($obj).". Id: $id$dbErr";
+            $this->lastError = '';
         }
 
         return $result;
